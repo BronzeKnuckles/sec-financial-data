@@ -19,7 +19,7 @@
 ### Files:
 #### Fetching all zip files from sec (2009 - 2023Q2) [dataFetch.py](https://github.com/BronzeKnuckles/sec-financial-data/blob/main/dataFetch.py)
 
-#### Inserting all data into PostgreSQL [postgreSQL.py](https://github.com/BronzeKnuckles/sec-financial-data/blob/main/postgreSQL.py)
+#### Inserting all data into PostgreSQL (Work in progress) [postgreSQL.py](https://github.com/BronzeKnuckles/sec-financial-data/blob/main/postgreSQL.py)
 
 #### Testing file .ipynb where I test and/or debug code [test.ipynb](https://github.com/BronzeKnuckles/sec-financial-data/blob/main/test.ipynb)
 ---

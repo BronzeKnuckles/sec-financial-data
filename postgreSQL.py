@@ -1,10 +1,13 @@
+# SOURCE : CGATGPT
+# Work in progress
+
 import os
 import psycopg2
 
 # PostgreSQL connection parameters
 DB_NAME = "sec-financial-data"
-DB_USER = "postgres"
-DB_PASS = "root"
+DB_USER = "postgres" # your user name 
+DB_PASS = "root" # your password
 DB_HOST = "localhost"
 DB_PORT = "5432"
 

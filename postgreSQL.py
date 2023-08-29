@@ -32,7 +32,7 @@ def insert_into_postgresql(conn, cur, BASE_DIR):
                 txt_file_path = os.path.join(root, file)
 
                 # Read txt file into a DataFrame
-                df = pd.read_txt(txt_file_path, sep="\n")
+                df = pd.read_csv(txt_file_path, sep="\t")
                 # Extract table name from txt file name (customize this if needed)
                 table_name = f"{os.path.splitext(file)[0]}_{root[7:]}"
 

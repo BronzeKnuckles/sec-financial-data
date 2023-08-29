@@ -18,7 +18,7 @@ def create_table_from_df(df, table_name, cur):
     columns = [f"{col} {type_mapping[str(df[col].dtype)]}" for col in df.columns]
 
     # Drop the table if it already exists (Tables were created previously, threw error, now fresh start)
-    cur.execute(f"DROP TABLE IF EXISTS {table_name};")
+    # cur.execute(f"DROP TABLE IF EXISTS {table_name};")
 
     create_table_sql = f"CREATE TABLE {table_name} ({', '.join(columns)});"
     cur.execute(create_table_sql)
@@ -69,5 +69,5 @@ def main():
     conn.close()
 
 
-if "__name__" == "__main__":
+if __name__ == "__main__":
     main()

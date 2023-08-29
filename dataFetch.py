@@ -1,5 +1,6 @@
 import requests, zipfile, io, os
 import pandas as pd
+import psycopg2
 
 
 def convertData(fname):

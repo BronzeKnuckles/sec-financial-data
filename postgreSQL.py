@@ -25,22 +25,22 @@ def create_table_from_df(df, table_name, cur):
 
 
 def insert_into_postgresql(conn, cur, BASE_DIR):
-    # Loop through each subdirectory and then each CSV file
+    # Loop through each subdirectory and then each txt file
     for root, dirs, files in os.walk(BASE_DIR):
         for file in files:
             if file.endswith(".txt"):
-                csv_file_path = os.path.join(root, file)
+                txt_file_path = os.path.join(root, file)
 
-                # Read CSV file into a DataFrame
-                df = pd.read_csv(csv_file_path, sep="\n")
-                # Extract table name from CSV file name (customize this if needed)
+                # Read txt file into a DataFrame
+                df = pd.read_txt(txt_file_path, sep="\n")
+                # Extract table name from txt file name (customize this if needed)
                 table_name = f"{os.path.splitext(file)[0]}_{root[7:]}"
 
                 # Create table
                 create_table_from_df(df, table_name, cur)
 
                 # Use the COPY command
-                with open(csv_file_path, "r") as f:
+                with open(txt_file_path, "r") as f:
                     next(f)  # Skip the header row
                     cur.copy_from(f, table_name, null="")
                 conn.commit()
@@ -54,7 +54,7 @@ def main():
     DB_HOST = "localhost"
     DB_PORT = "5432"
 
-    # Base directory containing subdirectories with CSV files
+    # Base directory containing subdirectories with txt files
     BASE_DIR = "./data/"
 
     # Connect to the PostgreSQL database

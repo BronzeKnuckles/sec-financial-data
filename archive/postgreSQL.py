@@ -52,6 +52,8 @@ def insert_into_postgresql(conn, cur, BASE_DIR):
     for root, dirs, files in os.walk(BASE_DIR):
         for file in files:
             if file.endswith(".txt"):
+                if root[7:11] == "2009":
+                    continue
                 # Extract table name from txt file name (customize this if needed)
                 table_name = f"{os.path.splitext(file)[0]}_{root[7:]}"
                 txt_file_path = os.path.join(root, file)
@@ -65,7 +67,13 @@ def insert_into_postgresql(conn, cur, BASE_DIR):
                     continue
                 # Read txt file into a DataFrame
                 df = pd.read_csv(txt_file_path, sep="\t")
-
+                if table_name[:3] == "num":
+                    try:
+                        del df["footnote"]
+                        df.to_csv(txt_file_path, sep="\t", index=False)
+                    except:
+                        pass
+                df = pd.read_csv(txt_file_path, sep="\t")
                 # Create table
                 create_table_from_df(df, table_name, cur, txt_file_path)
 
@@ -74,7 +82,7 @@ def insert_into_postgresql(conn, cur, BASE_DIR):
                     next(f)  # Skip the header row
                     cur.copy_from(f, table_name, null="")
                 conn.commit()
-                print(f"Inserted File: {file}")
+                print(f"Inserted Table: {table_name}")
 
 
 def main():

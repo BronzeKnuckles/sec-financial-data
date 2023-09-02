@@ -102,42 +102,26 @@ for company in files:
     cik = df["cik"]
     facts = df["facts"]["us-gaap"].keys()
     for fact in facts:
-        for i in range(
-            len(
-                df["facts"]["us-gaap"][fact]["units"][
-                    f'{list(df["facts"]["us-gaap"][fact]["units"].keys())[0]}'
-                ]
-            )
-        ):
+        dynamic_col = str(list(df["facts"]["us-gaap"][fact]["units"].keys())[0])
+        for i in range(len(df["facts"]["us-gaap"][fact]["units"][dynamic_col])):
             # df["facts"]["us-gaap"]["Cash"]["units"]["USD"][i]
+
             row = {
                 "CompanyName": company_name,
                 "cik": cik,
-                "fact": df["facts"]["us-gaap"][fact],
-                "units": df["facts"]["us-gaap"][fact]["units"],
-                "end": df["facts"]["us-gaap"][fact]["units"][
-                    f'{list(df["facts"]["us-gaap"][fact]["units"].keys())[0]}'
-                ][i]["end"],
-                "val": df["facts"]["us-gaap"][fact]["units"][
-                    f'{list(df["facts"]["us-gaap"][fact]["units"].keys())[0]}'
-                ][i]["val"],
-                "accn": df["facts"]["us-gaap"][fact]["units"][
-                    f'{list(df["facts"]["us-gaap"][fact]["units"].keys())[0]}'
-                ][i]["accn"],
-                "fy": df["facts"]["us-gaap"][fact]["units"][
-                    f'{list(df["facts"]["us-gaap"][fact]["units"].keys())[0]}'
-                ][i]["fy"],
-                "fp": df["facts"]["us-gaap"][fact]["units"][
-                    f'{list(df["facts"]["us-gaap"][fact]["units"].keys())[0]}'
-                ][i]["fp"],
-                "form": df["facts"]["us-gaap"][fact]["units"][
-                    f'{list(df["facts"]["us-gaap"][fact]["units"].keys())[0]}'
-                ][i]["form"],
-                "filed": df["facts"]["us-gaap"][fact]["units"][
-                    f'{list(df["facts"]["us-gaap"][fact]["units"].keys())[0]}'
-                ][i]["filed"],
+                "fact": fact,
+                "units": df["facts"]["us-gaap"][fact]["units"][dynamic_col],
+                "end": df["facts"]["us-gaap"][fact]["units"][dynamic_col][i]["end"],
+                "val": df["facts"]["us-gaap"][fact]["units"][dynamic_col][i]["val"],
+                "accn": df["facts"]["us-gaap"][fact]["units"][dynamic_col][i]["accn"],
+                "fy": df["facts"]["us-gaap"][fact]["units"][dynamic_col][i]["fy"],
+                "fp": df["facts"]["us-gaap"][fact]["units"][dynamic_col][i]["fp"],
+                "form": df["facts"]["us-gaap"][fact]["units"][dynamic_col][i]["form"],
+                "filed": df["facts"]["us-gaap"][fact]["units"][dynamic_col][i]["filed"],
             }
-            table = table.append(row, ignore_index=True)
+            row = pd.Series(row)
+
+            table = pd.concat([table, row], ignore_index=True)
 
 
-print(table)
+table.to_csv("./table.csv")

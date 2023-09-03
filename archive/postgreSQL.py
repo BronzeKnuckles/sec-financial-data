@@ -7,7 +7,7 @@ import pandas as pd
 
 
 # Function to create a table based on DataFrame dtypes
-def create_table_from_df(df, table_name, cur):
+def create_table_from_df(df, table_name, cur, txt_file_path):
     type_mapping = {
         "int64": "INTEGER",
         "float64": "REAL",
@@ -15,7 +15,30 @@ def create_table_from_df(df, table_name, cur):
         "object": "TEXT",
     }
 
+    # FIXME
+    """
+    columns_needed = [
+        "adsh",
+        "cik",
+        "name",
+        "sic",
+        "form",
+        "period",
+        "fy",
+        "fp",
+        "filed",
+        "accepted",
+    ]
+
+    column_list = list(df.columns)
+    if table_name[:3] == "sub":
+        for column in column_list:
+            if column not in columns_needed:
+                del df[column]
+        df.to_csv(txt_file_path, sep="\t", index=False)"""
+
     columns = [f"{col} {type_mapping[str(df[col].dtype)]}" for col in df.columns]
+    # print(columns)
 
     # Drop the table if it already exists (Tables were created previously, threw error, now fresh start)
     cur.execute(f"DROP TABLE IF EXISTS {table_name};")
@@ -29,21 +52,37 @@ def insert_into_postgresql(conn, cur, BASE_DIR):
     for root, dirs, files in os.walk(BASE_DIR):
         for file in files:
             if file.endswith(".txt"):
-                txt_file_path = os.path.join(root, file)
-
-                # Read txt file into a DataFrame
-                df = pd.read_txt(txt_file_path, sep="\n")
+                if root[7:11] == "2009":
+                    continue
                 # Extract table name from txt file name (customize this if needed)
                 table_name = f"{os.path.splitext(file)[0]}_{root[7:]}"
+                txt_file_path = os.path.join(root, file)
+                # print(txt_file_path)
 
+                # FIXME
+                if table_name[:3] == "sub":
+                    continue
+                # FIXME
+                elif table_name[:3] == "pre":
+                    continue
+                # Read txt file into a DataFrame
+                df = pd.read_csv(txt_file_path, sep="\t")
+                if table_name[:3] == "num":
+                    try:
+                        del df["footnote"]
+                        df.to_csv(txt_file_path, sep="\t", index=False)
+                    except:
+                        pass
+                df = pd.read_csv(txt_file_path, sep="\t")
                 # Create table
-                create_table_from_df(df, table_name, cur)
+                create_table_from_df(df, table_name, cur, txt_file_path)
 
                 # Use the COPY command
                 with open(txt_file_path, "r") as f:
                     next(f)  # Skip the header row
                     cur.copy_from(f, table_name, null="")
                 conn.commit()
+                print(f"Inserted Table: {table_name}")
 
 
 def main():
@@ -69,5 +108,5 @@ def main():
     conn.close()
 
 
-if "__name__" == "__main__":
+if __name__ == "__main__":
     main()

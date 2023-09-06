@@ -54,6 +54,7 @@ for file in csv_files:
         table_name = table_name.replace("csv", "")
         table_name = table_name.replace("(", "")
         table_name = table_name.replace(")", "")
+        table_name = table_name.replace("!", "")
 
         create_table_sql = f"""
             CREATE TABLE IF NOT EXISTS {table_name} (
